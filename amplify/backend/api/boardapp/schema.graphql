@@ -2,6 +2,5 @@ type Post @model {
 	id: ID!
 	title: String!
 	content: String!
-	price: Int
-	rating: Float
+	like: Int
 }
