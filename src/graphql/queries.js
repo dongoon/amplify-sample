@@ -8,6 +8,7 @@ export const getPost = /* GraphQL */ `
       title
       content
       like
+      owner
       createdAt
       updatedAt
     }
@@ -25,6 +26,7 @@ export const listPosts = /* GraphQL */ `
         title
         content
         like
+        owner
         createdAt
         updatedAt
       }

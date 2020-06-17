@@ -11,6 +11,7 @@ export const createPost = /* GraphQL */ `
       title
       content
       like
+      owner
       createdAt
       updatedAt
     }
@@ -26,6 +27,7 @@ export const updatePost = /* GraphQL */ `
       title
       content
       like
+      owner
       createdAt
       updatedAt
     }
@@ -41,6 +43,7 @@ export const deletePost = /* GraphQL */ `
       title
       content
       like
+      owner
       createdAt
       updatedAt
     }
