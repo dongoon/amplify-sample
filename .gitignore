@@ -42,3 +42,5 @@ amplifyconfiguration.json
 amplify-build-config.json
 amplify-gradle-config.json
 amplifytools.xcconfig
+# awsリソース共有の場合は版管理下に入れる
+amplify/team-provider-info.json
