@@ -1,0 +1,23 @@
+ul.comments {
+    padding-inline-start: 10px;
+}
+li.comment {
+    list-style: none;
+    margin-bottom: 4px;
+}
+.account-name {
+    font-size: x-small;
+}
+
+.you-say {
+    border-bottom: solid 1px #ddd;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.your-comment {
+    width: 200px;
+    margin-right: 12px;
+    height: 20px;
+}

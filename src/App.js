@@ -11,7 +11,6 @@ Amplify.configure(awsconfig);
 class App extends Component {
   state = {
     posts: [],
-    title: '',
     content: '',
     user: null,
     customState: null,
@@ -37,7 +36,6 @@ class App extends Component {
 
     Auth.currentAuthenticatedUser()
       .then(user => {
-        console.log(user)
         this.setState({ user })
         this.afterLogin()
       })
@@ -56,33 +54,24 @@ class App extends Component {
       next: (eventData) => {
         console.log('eventData: ', eventData)
         const post = eventData.value.data.onCreatePost
-        const posts = [...this.state.posts.filter(content => {
-          return (content.title !== post.title)
-        }), post]
+        const posts = [...this.state.posts, post]
         this.setState({ posts })
       }
     })
   }
 
   createPost = async () => {
-    // バリデーションチェック
-    if (this.state.title === '' || this.state.content === '') return
+    if (this.state.content === '') return
 
-    // 新規登録 mutation
     const createPostInput = {
-      title: this.state.title,
-      content: this.state.content
+      content: this.state.content,
+      account: this.state.user.attributes.email,
     }
-
-    // 登録処理
-    try {
-      const posts = [...this.state.posts, createPostInput]
-      this.setState({ posts: posts, title: "", content: "" })
-      await API.graphql(graphqlOperation(createPost, { input: createPostInput }))
-      console.log('createPostInput: ', createPostInput)
-    } catch (e) {
-      console.log(e)
-    }
+    API.graphql(graphqlOperation(createPost, { input: createPostInput }))
+      .then((o) => {
+        this.setState({ content: "" })
+      })
+      .catch((e) => console.log(e))
   }
 
   onChange = e => {
@@ -90,29 +79,31 @@ class App extends Component {
   }
 
   render() {
-    const { user } = this.state
+    const { user, posts } = this.state
+    const sortedPosts = posts.sort((a, b) => {
+      if (Date.parse(a.createdAt) < Date.parse(b.createdAt)) return -1
+      if (Date.parse(a.createdAt) > Date.parse(b.createdAt)) return 1
+      return 0
+    })
 
     const userMessage = <div className="userMessage">
-      <div>
-        タイトル
-        <input value={this.state.title} name="title" onChange={this.onChange}></input>
+      <div className="you-say">
+        <input value={this.state.content} name="content" onChange={this.onChange} className="your-comment" />
+        <button onClick={this.createPost}>送信</button>
       </div>
-      <div>
-        内容
-        <input value={this.state.content} name="content" onChange={this.onChange}></input>
-      </div>
-      <button onClick={this.createPost}>追加</button>
-      <hr />
-      <ul>
+      <ul className="comments">
         {
-          this.state.posts.map((post) => {
-            return <li key={post.id || 'new'}>{post.title}: {post.content}</li>
+          sortedPosts.map((post) => {
+            return <li key={post.id || 'new'} className="comment">
+              <div className="account-name">{post.account || '名無し'}</div>
+              <div className="content">{post.content}</div>
+            </li>
           })
         }
       </ul>
-      <button onClick={() => Auth.signOut()}>Sign Out</button>
+      <button onClick={() => Auth.signOut()}>サインアウト</button>
     </div>
-    const loginButton =  <button onClick={() => Auth.federatedSignIn({provider: 'Google'})}>Open Google</button>
+    const loginButton =  <button onClick={() => Auth.federatedSignIn({provider: 'Google'})}>Googleサインイン</button>
 
     return (
       <div className="App">
